@@ -52,11 +52,11 @@ public class MainActivity extends ActionBarActivity {
 	DataHandler db = null;
 	private ArrayList<Meal> foodList = new ArrayList<Meal>();
 	private ArrayList<String> foodListUncomplete = new ArrayList<String>();
-	final private static String[] namesOfDays = { "Pazartesi", "Salý",
-		"Çarþamba", "Perþembe", "Cuma", "Cumartesi", "Pazar" };
-	final private static String[] namesOfMonths = { "Ocak", "Þubat", "Mart",
-		"Nisan", "Mayýs", "Haziran", "Temmuz", "Aðustos", "Eylül", "Ekim",
-		"Kasým", "Aralýk" };
+	final private static String[] namesOfDays = { "Pazartesi", "Salï¿½",
+		"ï¿½arï¿½amba", "Perï¿½embe", "Cuma", "Cumartesi", "Pazar" };
+	final private static String[] namesOfMonths = { "Ocak", "ï¿½ubat", "Mart",
+		"Nisan", "Mayï¿½s", "Haziran", "Temmuz", "Aï¿½ustos", "Eylï¿½l", "Ekim",
+		"Kasï¿½m", "Aralï¿½k" };
 	final private static String READ_PATH = "http://kyzn.org/buyemek/list.txt";
 	TextView text = null;
 
@@ -130,7 +130,7 @@ public class MainActivity extends ActionBarActivity {
 			else {
 				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
 				foodList = db.getThisMonthsMeals();
-				Toast.makeText(MainActivity.this, "Yemek listesinin güncellenmesi için internete baðlanmanýz gereklidir.",
+				Toast.makeText(MainActivity.this, "Yemek listesinin gï¿½ncellenmesi iï¿½in internete baï¿½lanmanï¿½z gereklidir.",
 						Toast.LENGTH_LONG).show();
 			}
 		}
@@ -304,8 +304,8 @@ public class MainActivity extends ActionBarActivity {
 
 			fullDateTextView.setText(sdf.format(date));
 			dayNameTextView.setText(namesOfDays[dayOfWeek - 1]);
-			lunchTitleTextView.setText("Öðle Yemeði");
-			dinnerTitleTextView.setText("Akþam Yemeði");
+			lunchTitleTextView.setText("ï¿½ï¿½le Yemeï¿½i");
+			dinnerTitleTextView.setText("Akï¿½am Yemeï¿½i");
 
 			fullDateTextView.setTextColor(Color.BLUE);
 			dayNameTextView.setTextColor(Color.BLUE);
