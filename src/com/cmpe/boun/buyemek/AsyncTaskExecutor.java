@@ -20,16 +20,16 @@ import android.os.Build;
  */
 public class AsyncTaskExecutor {
 	
-	private static final int CORE_POOL_SIZE;
-	private static final int MAXIMUM_POOL_SIZE;
-	private static final int KEEP_ALIVE;
-	private static final TimeUnit TIME_UNIT;
+	static final int CORE_POOL_SIZE;
+	static final int MAXIMUM_POOL_SIZE;
+	static final int KEEP_ALIVE;
+	static final TimeUnit TIME_UNIT;
 	
-	private static final BlockingQueue<Runnable> concurrentPoolWorkQueue;
-	private static final ThreadFactory concurrentThreadFactory;
-    private static final ThreadPoolExecutor concurrentExecutor;
+	static final BlockingQueue<Runnable> concurrentPoolWorkQueue;
+	static final ThreadFactory concurrentThreadFactory;
+    static final ThreadPoolExecutor concurrentExecutor;
     
-    private AsyncTaskExecutor() {}
+    AsyncTaskExecutor() {}
     
     static {
     	CORE_POOL_SIZE    = 5;
@@ -71,8 +71,8 @@ public class AsyncTaskExecutor {
      * Thread factory for AsyncTaskExecutor
      * @author Artem Zinnatullin
      */
-    private static class AsyncTaskThreadFactory implements ThreadFactory {
-    	private final AtomicInteger count = new AtomicInteger(1);;
+    static class AsyncTaskThreadFactory implements ThreadFactory {
+    	final AtomicInteger count = new AtomicInteger(1);;
     	
 		@Override
 		public Thread newThread(Runnable r) {

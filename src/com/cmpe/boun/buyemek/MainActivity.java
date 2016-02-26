@@ -48,16 +48,16 @@ public class MainActivity extends ActionBarActivity {
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	ViewPager mViewPager;
-	private FileDownloadTask mFileDownloadTask = null;
+	FileDownloadTask mFileDownloadTask = null;
 	DataHandler db = null;
-	private ArrayList<Meal> foodList = new ArrayList<Meal>();
-	private ArrayList<String> foodListUncomplete = new ArrayList<String>();
-	final private static String[] namesOfDays = { "Pazartesi", "Sal�",
+	ArrayList<Meal> foodList = new ArrayList<Meal>();
+	ArrayList<String> foodListUncomplete = new ArrayList<String>();
+	final static String[] namesOfDays = { "Pazartesi", "Sal�",
 		"�ar�amba", "Per�embe", "Cuma", "Cumartesi", "Pazar" };
-	final private static String[] namesOfMonths = { "Ocak", "�ubat", "Mart",
+	final static String[] namesOfMonths = { "Ocak", "�ubat", "Mart",
 		"Nisan", "May�s", "Haziran", "Temmuz", "A�ustos", "Eyl�l", "Ekim",
 		"Kas�m", "Aral�k" };
-	final private static String READ_PATH = "http://kyzn.org/buyemek/list.txt";
+	final static String READ_PATH = "http://kyzn.org/buyemek/list.txt";
 	TextView text = null;
 
 
@@ -193,7 +193,7 @@ public class MainActivity extends ActionBarActivity {
 
 	public static class PlaceholderFragment extends Fragment {
 
-		private static final String ARG_SECTION_NUMBER = "section_number";
+		static final String ARG_SECTION_NUMBER = "section_number";
 
 		public static PlaceholderFragment newInstance(int sectionNumber) {
 			PlaceholderFragment fragment = new PlaceholderFragment();
@@ -315,24 +315,24 @@ public class MainActivity extends ActionBarActivity {
 			// find correct meal
 			for (int i = 0; i < foodList.size(); i++) {
 				Meal meal = foodList.get(i);
-				if (meal.getDay() == currentDay
-						&& meal.getMonth().toLowerCase()
+				if (meal.day == currentDay
+						&& meal.month.toLowerCase()
 						.contentEquals(currentMonth.toLowerCase())) {
-					lunchFirstMealTextView.setText(meal.getFirstMeal());
-					lunchSecondMealTextView.setText(meal.getSecondMeal());
-					lunchThirdMealTextView.setText(meal.getThirdMeal());
-					lunchFourthMealTextView.setText(meal.getFourthMeal());
+					lunchFirstMealTextView.setText(meal.first_meal);
+					lunchSecondMealTextView.setText(meal.second_meal);
+					lunchThirdMealTextView.setText(meal.third_meal);
+					lunchFourthMealTextView.setText(meal.fourth_meal);
 
 					if(foodList.size()>=i+1)
 					{
-						if (meal.getDay() == currentDay
-								&& meal.getMonth().toLowerCase()
+						if (meal.day == currentDay
+								&& meal.month.toLowerCase()
 								.contentEquals(currentMonth.toLowerCase())) {
 							meal = foodList.get(i + 1);
-							dinnerFirstMealTextView.setText(meal.getFirstMeal());
-							dinnerSecondMealTextView.setText(meal.getSecondMeal());
-							dinnerThirdMealTextView.setText(meal.getThirdMeal());
-							dinnerFourthMealTextView.setText(meal.getFourthMeal());
+							dinnerFirstMealTextView.setText(meal.first_meal);
+							dinnerSecondMealTextView.setText(meal.second_meal);
+							dinnerThirdMealTextView.setText(meal.third_meal);
+							dinnerFourthMealTextView.setText(meal.fourth_meal);
 						}
 					}
 					break;
@@ -343,7 +343,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	private boolean isNetworkAvailable() {
+	boolean isNetworkAvailable() {
 
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager
@@ -360,7 +360,7 @@ public class MainActivity extends ActionBarActivity {
 		return myList;
 	}
 
-	private class FileDownloadTask extends AsyncTask<Void, Void, ArrayList<String>> {
+	class FileDownloadTask extends AsyncTask<Void, Void, ArrayList<String>> {
 		ArrayList<String> list = new ArrayList<String>();
 
 		@Override

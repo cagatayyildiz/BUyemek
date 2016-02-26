@@ -21,24 +21,24 @@ import android.util.Log;
 	}
 
 	// Database Version
-	private static final int DATABASE_VERSION = 1;
-	final private static String[] namesOfMonths = { "Ocak", "Þubat", "Mart",
-		"Nisan", "Mayýs", "Haziran", "Temmuz", "Aðustos", "Eylül", "Ekim",
-		"Kasým", "Aralýk" };
+	static final int DATABASE_VERSION = 1;
+	final static String[] namesOfMonths = { "Ocak", "Åžubat", "Mart",
+		"Nisan", "MayÄ±s", "Haziran", "Temmuz", "AÄŸustos", "EylÃ¼l", "Ekim",
+		"KasÄ±m", "AralÄ±k" };
 
 	// Database Name
-	private static final String DATABASE_NAME = "MyDatabase";
+	static final String DATABASE_NAME = "MyDatabase";
 
-	private static final String TABLE_FOOD = "FoodTable";
+	static final String TABLE_FOOD = "FoodTable";
 	
-	private static final String KEY_FOOD_DAY = "day";
-	private static final String KEY_FOOD_MONTH = "month";
-	private static final String KEY_FOOD_YEAR = "year";
-	private static final String KEY_FOOD_MEAL = "meal";	
-	private static final String KEY_FOOD_FOOD1 = "food1";
-	private static final String KEY_FOOD_FOOD2 = "food2";
-	private static final String KEY_FOOD_FOOD3 = "food3";
-	private static final String KEY_FOOD_FOOD4 = "food4";
+	static final String KEY_FOOD_DAY = "day";
+	static final String KEY_FOOD_MONTH = "month";
+	static final String KEY_FOOD_YEAR = "year";
+	static final String KEY_FOOD_MEAL = "meal";	
+	static final String KEY_FOOD_FOOD1 = "food1";
+	static final String KEY_FOOD_FOOD2 = "food2";
+	static final String KEY_FOOD_FOOD3 = "food3";
+	static final String KEY_FOOD_FOOD4 = "food4";
 
 	public DataHandler(Context context, String name, CursorFactory factory,
 			int version) {
@@ -99,14 +99,14 @@ import android.util.Log;
 
 	public void insertMeal(SQLiteDatabase db, Meal m) {
 		ContentValues values = new ContentValues();
-		values.put(KEY_FOOD_DAY, String.valueOf(m.getDay()));
-		values.put(KEY_FOOD_MONTH, m.getMonth());
-		values.put(KEY_FOOD_YEAR, String.valueOf(m.getYear()));
-		values.put(KEY_FOOD_MEAL, m.getTime());
-		values.put(KEY_FOOD_FOOD1, m.getFirstMeal());
-		values.put(KEY_FOOD_FOOD2, m.getSecondMeal());
-		values.put(KEY_FOOD_FOOD3, m.getThirdMeal());
-		values.put(KEY_FOOD_FOOD4, m.getFourthMeal());
+		values.put(KEY_FOOD_DAY, String.valueOf(m.day));
+		values.put(KEY_FOOD_MONTH, m.month);
+		values.put(KEY_FOOD_YEAR, String.valueOf(m.year));
+		values.put(KEY_FOOD_MEAL, m.time);
+		values.put(KEY_FOOD_FOOD1, m.first_meal);
+		values.put(KEY_FOOD_FOOD2, m.second_meal);
+		values.put(KEY_FOOD_FOOD3, m.third_meal);
+		values.put(KEY_FOOD_FOOD4, m.fourth_meal);
 
 		db.insert(TABLE_FOOD, null, values);
 	}
@@ -123,14 +123,14 @@ import android.util.Log;
 		if (cursor.moveToFirst()) {
 			do {
 				Meal m = new Meal();
-				m.setDay(Integer.parseInt(cursor.getString(0)));
-				m.setMonth(cursor.getString(1));
-				m.setYear(Integer.parseInt(cursor.getString(2)));
-				m.setTime(cursor.getString(3));
-				m.setFirst_meal(cursor.getString(4));
-				m.setSecond_meal(cursor.getString(5));
-				m.setThird_meal(cursor.getString(6));
-				m.setFourth_meal(cursor.getString(7));
+				m.day = (Integer.parseInt(cursor.getString(0)));
+				m.month = (cursor.getString(1));
+				m.year = (Integer.parseInt(cursor.getString(2)));
+				m.time = (cursor.getString(3));
+				m.first_meal =(cursor.getString(4));
+				m.second_meal = (cursor.getString(5));
+				m.third_meal = (cursor.getString(6));
+				m.fourth_meal = (cursor.getString(7));
 				list.add(m);
 			} while (cursor.moveToNext());
 		}
