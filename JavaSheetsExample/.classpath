@@ -1,52 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-analytics-2.1.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-analytics-meta-2.1.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-appsforyourdomain-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-appsforyourdomain-meta-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-base-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-blogger-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-blogger-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-books-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-books-meta-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-calendar-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-calendar-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-client-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-client-meta-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-codesearch-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-codesearch-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-contacts-3.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-contacts-meta-3.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-core-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-docs-3.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-docs-meta-3.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-finance-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-finance-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-gtt-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-gtt-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-health-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-health-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-maps-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-maps-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-media-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-photos-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-photos-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-projecthosting-2.1.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-projecthosting-meta-2.1.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-sidewiki-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-sidewiki-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-sites-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-sites-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-spreadsheet-3.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-spreadsheet-meta-3.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-webmastertools-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-webmastertools-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-youtube-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/gdata-youtube-meta-2.0.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/guava-11.0.2.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/javax.mail.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/workspace_mars/JavaSheetsExample/jsr305.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/cagatay/Dropbox/Academic_Stuff/MyGithubRepos/BUyemek/JavaSheetsExample/dropbox-core-sdk-1.8.2.jar"/>
+	<classpathentry kind="lib" path="/home/cagatay/Dropbox/Academic_Stuff/MyGithubRepos/BUyemek/JavaSheetsExample/jackson-core-2.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

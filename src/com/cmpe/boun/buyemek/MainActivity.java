@@ -52,12 +52,12 @@ public class MainActivity extends ActionBarActivity {
 	DataHandler db = null;
 	ArrayList<Meal> foodList = new ArrayList<Meal>();
 	ArrayList<String> foodListUncomplete = new ArrayList<String>();
-	final static String[] namesOfDays = { "Pazartesi", "Sal�",
-		"�ar�amba", "Per�embe", "Cuma", "Cumartesi", "Pazar" };
-	final static String[] namesOfMonths = { "Ocak", "�ubat", "Mart",
-		"Nisan", "May�s", "Haziran", "Temmuz", "A�ustos", "Eyl�l", "Ekim",
-		"Kas�m", "Aral�k" };
-	final static String READ_PATH = "http://kyzn.org/buyemek/list.txt";
+	final static String[] namesOfDays = { "Pazartesi", "Salı",
+		"Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar" };
+	final static String[] namesOfMonths = { "Ocak", "Şubat", "Mart",
+		"Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim",
+		"Kasım", "Aralık" };
+	final static String READ_PATH = "https://dl.dropboxusercontent.com/u/64468378/yemek_listesi_update_checker.py";
 	TextView text = null;
 
 
@@ -130,7 +130,7 @@ public class MainActivity extends ActionBarActivity {
 			else {
 				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
 				foodList = db.getThisMonthsMeals();
-				Toast.makeText(MainActivity.this, "Yemek listesinin g�ncellenmesi i�in internete ba�lanman�z gereklidir.",
+				Toast.makeText(MainActivity.this, "Yemek listesinin güncellenmesi için internete bağlanmanız gereklidir.",
 						Toast.LENGTH_LONG).show();
 			}
 		}
@@ -304,8 +304,8 @@ public class MainActivity extends ActionBarActivity {
 
 			fullDateTextView.setText(sdf.format(date));
 			dayNameTextView.setText(namesOfDays[dayOfWeek - 1]);
-			lunchTitleTextView.setText("��le Yeme�i");
-			dinnerTitleTextView.setText("Ak�am Yeme�i");
+			lunchTitleTextView.setText("Öğle Yemeği");
+			dinnerTitleTextView.setText("Akşam Yemeği");
 
 			fullDateTextView.setTextColor(Color.BLUE);
 			dayNameTextView.setTextColor(Color.BLUE);
@@ -374,7 +374,8 @@ public class MainActivity extends ActionBarActivity {
 						new InputStreamReader(content));
 				String s = "";
 				while ((s = buffer.readLine()) != null) {
-					list.add(s);
+					// list.add(s);
+					Log.d("Line:",s);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
