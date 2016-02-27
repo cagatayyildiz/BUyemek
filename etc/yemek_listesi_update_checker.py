@@ -39,6 +39,7 @@ def send_email(user, pwd, recipient, subject, body):
     except:
         print "failed to send mail"
 
+
 import urllib2
 import hashlib
 import os

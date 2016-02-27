@@ -50,7 +50,6 @@ import android.util.Log;
 		super(context, name, factory, version, errorHandler);
 	}
 
-
 	@Override
 	public void onCreate(SQLiteDatabase arg0) {
 		String CREATE_FOOD_TABLE = "CREATE TABLE " + TABLE_FOOD + "(" +

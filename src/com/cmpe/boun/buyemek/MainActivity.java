@@ -39,19 +39,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cmpe.boun.buyemek.R;
-import com.parse.Parse;
-import com.parse.ParseObject;
 
 public class MainActivity extends ActionBarActivity {
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	ViewPager mViewPager;
-	FileDownloadTask mFileDownloadTask = null;
+	FileDownloadTask mFileDownloadTask;
 	DataHandler db = null;
 	ArrayList<Meal> foodList = new ArrayList<Meal>();
-	ArrayList<String> foodListUncomplete = new ArrayList<String>();
+	ArrayList<String> newMealEntries = new ArrayList<String>();
 	final static String[] namesOfDays = { "Pazartesi", "Salı",
 		"Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar" };
 	final static String[] namesOfMonths = { "Ocak", "Şubat", "Mart",
@@ -67,14 +64,6 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_main);
 		mFileDownloadTask = new FileDownloadTask();
 		db = new DataHandler(getApplicationContext());
-
-		Parse.enableLocalDatastore(this);
-		Parse.initialize(this, "gRVas33KrZc7btfsX0TISveWFrP6DanMR5zzH5UC", "7szMV0d2rnpg1qEKZdGNlZdhaLR4L1om0Kar1rxp");
-		
-		ParseObject testObject = new ParseObject("AppOpened");
-		testObject.put("moment", " this");
-		testObject.saveEventually();
-		
 		
 
 		if (isNetworkAvailable()) {
@@ -85,12 +74,12 @@ public class MainActivity extends ActionBarActivity {
 			else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
 				try {
-					foodListUncomplete = mFileDownloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null).get();
+					newMealEntries = mFileDownloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null).get();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				for (int i = 0; i < foodListUncomplete.size(); i++) {
-					String s = foodListUncomplete.get(i);
+				for (int i = 0; i < newMealEntries.size(); i++) {
+					String s = newMealEntries.get(i);
 					Log.d("Food:", s);
 					foodList.add(new Meal(s));
 				}
@@ -98,15 +87,16 @@ public class MainActivity extends ActionBarActivity {
 				foodList = db.getThisMonthsMeals();
 				Log.d("databasefoodListSize", foodList.size() + " ");
 			}
+			/*
 			else {
 				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
 				try {
-					foodListUncomplete = mFileDownloadTask.execute((Void[])null).get();
+					newMealEntries = mFileDownloadTask.execute((Void[])null).get();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				for (int i = 0; i < foodListUncomplete.size(); i++) {
-					String s = foodListUncomplete.get(i);
+				for (int i = 0; i < newMealEntries.size(); i++) {
+					String s = newMealEntries.get(i);
 					Log.d("Food:", s);
 					foodList.add(new Meal(s));
 				}
@@ -114,11 +104,6 @@ public class MainActivity extends ActionBarActivity {
 				foodList = db.getThisMonthsMeals();
 				Log.d("databasefoodListSize", foodList.size() + " ");
 
-			}
-			/*
-			for (int i = 0; i < foodList.size(); i++) {
-				Meal m = foodList.get(i);
-				Log.d("Food(" + m.getDay() + "/10):", m.getSecondMeal());
 			}
 			*/
 		} 
@@ -232,58 +217,30 @@ public class MainActivity extends ActionBarActivity {
 					startActivity(launchBrowser);
 				}
 			});
-			/*
-			ArrayList<String> colors = new ArrayList<String>();
-			colors.add("#FF3399");
-			colors.add("#339933");
-			colors.add("#A37547");
-			colors.add("#FFA319");
-			colors.add("#FF0000");
-			colors.add("#BF00FF");
-			colors.add("#DF3A01");
-			colors.add("#2EFE64");
-			colors.add("#990099");
-			colors.add("#0000FF");
-			colors.add("#FF85AD");
-			colors.add("#FF6600");
-			Collections.shuffle(colors);
-			 */
 			TextView fullDateTextView = (TextView) rootView
 					.findViewById(R.id.full_date);
-			//			fullDateTextView.setTextColor(Color.parseColor(colors.get(0)));
 			TextView dayNameTextView = (TextView) rootView
 					.findViewById(R.id.day_name);
-			//			dayNameTextView.setTextColor(Color.parseColor(colors.get(1)));
 			TextView lunchTitleTextView = (TextView) rootView
 					.findViewById(R.id.lunch_title);
-			//			lunchTitleTextView.setTextColor(Color.parseColor(colors.get(2)));
 			TextView dinnerTitleTextView = (TextView) rootView
 					.findViewById(R.id.dinner_title);
-			//			dinnerTitleTextView.setTextColor(Color.parseColor(colors.get(3)));
 			TextView lunchFirstMealTextView = (TextView) rootView
 					.findViewById(R.id.lunch_first_meal);
-			//			lunchFirstMealTextView.setTextColor(Color.parseColor(colors.get(4)));
 			TextView lunchSecondMealTextView = (TextView) rootView
 					.findViewById(R.id.lunch_second_meal);
-			//			lunchSecondMealTextView.setTextColor(Color.parseColor(colors.get(5)));
 			TextView lunchThirdMealTextView = (TextView) rootView
 					.findViewById(R.id.lunch_third_meal);
-			//			lunchThirdMealTextView.setTextColor(Color.parseColor(colors.get(6)));
 			TextView lunchFourthMealTextView = (TextView) rootView
 					.findViewById(R.id.lunch_fourth_meal);
-			//			lunchFourthMealTextView.setTextColor(Color.parseColor(colors.get(7)));
 			TextView dinnerFirstMealTextView = (TextView) rootView
 					.findViewById(R.id.dinner_first_meal);
-			//			dinnerFirstMealTextView.setTextColor(Color.parseColor(colors.get(8)));
 			TextView dinnerSecondMealTextView = (TextView) rootView
 					.findViewById(R.id.dinner_second_meal);
-			//			dinnerSecondMealTextView.setTextColor(Color.parseColor(colors.get(9)));
 			TextView dinnerThirdMealTextView = (TextView) rootView
 					.findViewById(R.id.dinner_third_meal);
-			//			dinnerThirdMealTextView.setTextColor(Color.parseColor(colors.get(10)));
 			TextView dinnerFourthMealTextView = (TextView) rootView
 					.findViewById(R.id.dinner_fourth_meal);
-			//			fullDateTextView.setTextColor(Color.parseColor(colors.get(11)));
 
 			// prepare date info
 			Date date = new Date();
@@ -350,16 +307,16 @@ public class MainActivity extends ActionBarActivity {
 				.getActiveNetworkInfo();
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
-
+/*
 	public ArrayList<Meal> processFoodListString() {
 		ArrayList<Meal> myList = new ArrayList<Meal>();
-		for (int i = 0; i < foodListUncomplete.size(); i++) {
-			String s = foodListUncomplete.get(i);
+		for (int i = 0; i < newMealEntries.size(); i++) {
+			String s = newMealEntries.get(i);
 			System.out.println(new Meal(s).toString());
 		}
 		return myList;
 	}
-
+*/
 	class FileDownloadTask extends AsyncTask<Void, Void, ArrayList<String>> {
 		ArrayList<String> list = new ArrayList<String>();
 
