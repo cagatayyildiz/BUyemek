@@ -1,18 +1,5 @@
 package com.cmpe.boun.buyemek;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +8,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,8 +22,23 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -48,65 +49,48 @@ public class MainActivity extends ActionBarActivity {
 	FileDownloadTask mFileDownloadTask;
 	DataHandler db = null;
 	ArrayList<Meal> foodList = new ArrayList<Meal>();
-	ArrayList<String> newMealEntries = new ArrayList<String>();
+	ArrayList<String> newMealLines = new ArrayList<String>();
 	final static String[] namesOfDays = { "Pazartesi", "Salı",
 		"Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar" };
 	final static String[] namesOfMonths = { "Ocak", "Şubat", "Mart",
 		"Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim",
 		"Kasım", "Aralık" };
-	final static String READ_PATH = "https://dl.dropboxusercontent.com/u/64468378/yemek_listesi_update_checker.py";
-	TextView text = null;
+	final static String READ_PATH = "https://dl.dropboxusercontent.com/u/64468378/BUyemek/yemek_listesi.txt";
+    final static String meal1Title = "Öğle Yemeği";
+    final static String meal2Title = "Akşam Yemeği";
 
 
 	@SuppressLint("NewApi") protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.activity_main);
 		mFileDownloadTask = new FileDownloadTask();
 		db = new DataHandler(getApplicationContext());
-		
+
 
 		if (isNetworkAvailable()) {
 			if (db.isDatabaseUpToDate()) {
 				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
 				foodList = db.getThisMonthsMeals();
+
 			}
-			else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
-				try {
-					newMealEntries = mFileDownloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null).get();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				for (int i = 0; i < newMealEntries.size(); i++) {
-					String s = newMealEntries.get(i);
-					Log.d("Food:", s);
-					foodList.add(new Meal(s));
-				}
-				db.addFoods(foodList);
-				foodList = db.getThisMonthsMeals();
-				Log.d("databasefoodListSize", foodList.size() + " ");
-			}
-			/*
 			else {
 				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
 				try {
-					newMealEntries = mFileDownloadTask.execute((Void[])null).get();
+                    newMealLines = mFileDownloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null).get();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				for (int i = 0; i < newMealEntries.size(); i++) {
-					String s = newMealEntries.get(i);
+				for (int i = 0; i < newMealLines.size(); i++) {
+					String s = newMealLines.get(i);
 					Log.d("Food:", s);
 					foodList.add(new Meal(s));
 				}
-				db.addFoods(foodList);
-				foodList = db.getThisMonthsMeals();
+				db.insertMeals(foodList);
+                foodList = db.getThisMonthsMeals();
 				Log.d("databasefoodListSize", foodList.size() + " ");
-
 			}
-			*/
-		} 
+		}
 		else {
 			if (db.isDatabaseUpToDate()) {
 				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
@@ -190,6 +174,7 @@ public class MainActivity extends ActionBarActivity {
 
 		public PlaceholderFragment() {
 		}
+        
 
 		@SuppressLint("SimpleDateFormat")
 		@Override
@@ -229,6 +214,8 @@ public class MainActivity extends ActionBarActivity {
 					.findViewById(R.id.lunch_first_meal);
 			TextView lunchSecondMealTextView = (TextView) rootView
 					.findViewById(R.id.lunch_second_meal);
+            TextView lunchSecondMealVegTextView = (TextView) rootView
+                    .findViewById(R.id.lunch_second_meal_veg);
 			TextView lunchThirdMealTextView = (TextView) rootView
 					.findViewById(R.id.lunch_third_meal);
 			TextView lunchFourthMealTextView = (TextView) rootView
@@ -237,12 +224,35 @@ public class MainActivity extends ActionBarActivity {
 					.findViewById(R.id.dinner_first_meal);
 			TextView dinnerSecondMealTextView = (TextView) rootView
 					.findViewById(R.id.dinner_second_meal);
+            TextView dinnerSecondMealVegTextView = (TextView) rootView
+                    .findViewById(R.id.dinner_second_meal_veg);
 			TextView dinnerThirdMealTextView = (TextView) rootView
 					.findViewById(R.id.dinner_third_meal);
 			TextView dinnerFourthMealTextView = (TextView) rootView
 					.findViewById(R.id.dinner_fourth_meal);
 
-			// prepare date info
+            CheckBox notifCheckBox = (CheckBox) rootView
+                    .findViewById(R.id.notif_checkbox);
+
+            if (getArguments().getInt(ARG_SECTION_NUMBER) != 1) {
+                notifCheckBox.setVisibility(View.GONE);
+            }
+
+            boolean currentNotifStatus = SaveSharedPreference.getNotificationStatus(getActivity().getApplicationContext());
+            if (currentNotifStatus){
+                notifCheckBox.setChecked(true);
+            }
+
+            notifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+               @Override
+               public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                   SaveSharedPreference.updateNotificationStatus(getActivity().getApplicationContext(), isChecked);
+                   InitAlarms.setAlarms(getActivity().getApplicationContext());
+               }
+           }
+            );
+
+            // prepare date info
 			Date date = new Date();
 			date = new Date(date.getTime() + (1000 * 60 * 60 * 24)
 					* (getArguments().getInt(ARG_SECTION_NUMBER) - 1));
@@ -261,13 +271,16 @@ public class MainActivity extends ActionBarActivity {
 
 			fullDateTextView.setText(sdf.format(date));
 			dayNameTextView.setText(namesOfDays[dayOfWeek - 1]);
-			lunchTitleTextView.setText("Öğle Yemeği");
-			dinnerTitleTextView.setText("Akşam Yemeği");
+			lunchTitleTextView.setText(meal1Title);
+			dinnerTitleTextView.setText(meal2Title);
 
 			fullDateTextView.setTextColor(Color.BLUE);
 			dayNameTextView.setTextColor(Color.BLUE);
 			lunchTitleTextView.setTextColor(Color.BLUE);
 			dinnerTitleTextView.setTextColor(Color.BLUE);
+
+            lunchSecondMealVegTextView.setTextColor(Color.RED);
+            dinnerSecondMealVegTextView.setTextColor(Color.RED);
 
 			// find correct meal
 			for (int i = 0; i < foodList.size(); i++) {
@@ -277,6 +290,7 @@ public class MainActivity extends ActionBarActivity {
 						.contentEquals(currentMonth.toLowerCase())) {
 					lunchFirstMealTextView.setText(meal.first_meal);
 					lunchSecondMealTextView.setText(meal.second_meal);
+                    lunchSecondMealVegTextView.setText(meal.second_meal_veg);
 					lunchThirdMealTextView.setText(meal.third_meal);
 					lunchFourthMealTextView.setText(meal.fourth_meal);
 
@@ -288,6 +302,7 @@ public class MainActivity extends ActionBarActivity {
 							meal = foodList.get(i + 1);
 							dinnerFirstMealTextView.setText(meal.first_meal);
 							dinnerSecondMealTextView.setText(meal.second_meal);
+                            dinnerSecondMealVegTextView.setText(meal.second_meal_veg);
 							dinnerThirdMealTextView.setText(meal.third_meal);
 							dinnerFourthMealTextView.setText(meal.fourth_meal);
 						}
@@ -307,18 +322,9 @@ public class MainActivity extends ActionBarActivity {
 				.getActiveNetworkInfo();
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
-/*
-	public ArrayList<Meal> processFoodListString() {
-		ArrayList<Meal> myList = new ArrayList<Meal>();
-		for (int i = 0; i < newMealEntries.size(); i++) {
-			String s = newMealEntries.get(i);
-			System.out.println(new Meal(s).toString());
-		}
-		return myList;
-	}
-*/
+
 	class FileDownloadTask extends AsyncTask<Void, Void, ArrayList<String>> {
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> lines = new ArrayList<String>();
 
 		@Override
 		protected ArrayList<String> doInBackground(Void... arg0) {
@@ -331,13 +337,13 @@ public class MainActivity extends ActionBarActivity {
 						new InputStreamReader(content));
 				String s = "";
 				while ((s = buffer.readLine()) != null) {
-					// list.add(s);
+                    lines.add(s);
 					Log.d("Line:",s);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return list;
+			return lines;
 		}
 
 		@Override
@@ -345,11 +351,13 @@ public class MainActivity extends ActionBarActivity {
 		}
 		@Override
 		protected void onPostExecute(ArrayList<String> response){
+            // implement here so that view is updated
 		}
-		@Override  
-		protected void onCancelled() {  
-		}  
+		@Override
+		protected void onCancelled() {
+		}
 	}
+
 
 }
 

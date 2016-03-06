@@ -1,5 +1,7 @@
 package com.cmpe.boun.buyemek;
 
+import android.util.Log;
+
 public class Meal {
 
 	int day;
@@ -8,8 +10,12 @@ public class Meal {
 	String time;
 	String first_meal;
 	String second_meal;
+	String second_meal_veg;
 	String third_meal;
 	String fourth_meal;
+
+	final static String MEAL1_TIME = "oglen";
+	final static String MEAL2_TIME = "aksam";
 
 	public Meal() {
 		day = -1;
@@ -18,28 +24,31 @@ public class Meal {
 		time = "";
 		first_meal = "";
 		second_meal = "";
+		second_meal_veg = "";
 		third_meal = "";
 		fourth_meal = "";
 	}
 	public Meal(String line)
 	{
 		try {
-			line = line.replace(".", "").replace("\\n", "");
-			String dateAndTime = line.substring(0,line.indexOf(':'));
-			if(dateAndTime.contains("("))
-				dateAndTime = dateAndTime.substring(0,dateAndTime.indexOf('('));
-			int seperatorIndex = dateAndTime.lastIndexOf(' ');
-			String [] temp = dateAndTime.split(" ");
-			this.day = Integer.parseInt(temp[0]);
-			this.month = temp[1];
-			this.year = Integer.parseInt(temp[2]);
-			this.time = dateAndTime.substring(seperatorIndex+1);
 
-			String [] meals = line.substring(line.indexOf(':')+1).split(",");
-			this.first_meal = meals[0];
-			this.second_meal = meals[1];
-			this.third_meal = meals[2];
-			this.fourth_meal = meals[3];
+			String[] s_line = line.split(",");
+			String[] c_date = s_line[0].split("-");
+
+			this.day = Integer.parseInt(c_date[0]);
+			this.month = MainActivity.namesOfMonths[Integer.parseInt(c_date[1])-1];
+			this.year = Integer.parseInt(c_date[2]);
+			this.time = s_line[1];
+			/*
+			if (this.time.contentEquals(MEAL1_TIME) || this.time.contentEquals(MEAL2_TIME)) {
+				throw new IllegalArgumentException("Meal time must be either " + MEAL1_TIME + " or " + MEAL2_TIME + ". Yours is " + this.time + ".");
+			}
+			*/
+			this.first_meal = s_line[2];
+			this.second_meal = s_line[3];
+			this.second_meal_veg = s_line[4];
+			this.third_meal = s_line[5];
+			this.fourth_meal = s_line[6];
 		} catch (Exception e) {
 
 		}
@@ -48,8 +57,12 @@ public class Meal {
 
 	public String toString()
 	{
-		return day + month + year + " - " + time + "\n" + first_meal + "\n" + second_meal + "\n" + third_meal + "\n" + fourth_meal + "\n";
+		return day + month + year + " - " + time + "\n" + first_meal + "\n" + second_meal + "\n" + second_meal_veg + "\n" + third_meal + "\n" + fourth_meal + "\n";
 	}
 
+	public String getJustMeals()
+	{
+		return  first_meal + ", " + second_meal + ", " + second_meal_veg + ", " + third_meal + ", " + fourth_meal;
+	}
 
 }

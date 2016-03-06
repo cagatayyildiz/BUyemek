@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -80,6 +85,14 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/lunch_second_meal_veg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Bulunamadı!"
+            android:textSize="16sp" />
+
+        <TextView
             android:id="@+id/lunch_third_meal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -141,6 +154,14 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/dinner_second_meal_veg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Bulunamadı!"
+            android:textSize="16sp" />
+
+        <TextView
             android:id="@+id/dinner_third_meal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -155,6 +176,30 @@
             android:gravity="center"
             android:text="Bulunamadı!"
             android:textSize="16sp" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text=""
+            android:textSize="30sp" />
+
+        <CheckBox
+            android:id="@+id/notif_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notif_checkbox_text" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -194,3 +239,4 @@
     </LinearLayout>
 
 </LinearLayout>
+</ScrollView>
