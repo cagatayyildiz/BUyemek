@@ -68,6 +68,8 @@ public class MainActivity extends ActionBarActivity {
 		db = new DataHandler(getApplicationContext());
 
 
+		InitAlarms.setAlarms(getApplicationContext());
+
 		if (isNetworkAvailable()) {
 			if (db.isDatabaseUpToDate()) {
 				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
@@ -247,7 +249,6 @@ public class MainActivity extends ActionBarActivity {
                @Override
                public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
                    SaveSharedPreference.updateNotificationStatus(getActivity().getApplicationContext(), isChecked);
-                   InitAlarms.setAlarms(getActivity().getApplicationContext());
                }
            }
             );

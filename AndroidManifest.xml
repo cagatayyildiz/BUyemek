@@ -38,6 +38,9 @@
             </intent-filter>
         </receiver>
         <receiver android:name="com.cmpe.boun.buyemek.TimeAlarm" >
+            <intent-filter>
+                <action android:name="com.cmpe.boun.buyemek.InitAlarms" />
+            </intent-filter>
         </receiver>
     </application>
 

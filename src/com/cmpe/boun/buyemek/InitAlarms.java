@@ -19,8 +19,8 @@ public class InitAlarms extends IntentService {
 
     private static final String TAG = "InitAlarms";
 
-    static final int NOTIF_HOUR1 = 2;
-    static final int NOTIF_MIN1 = 20;
+    static final int NOTIF_HOUR1 = 13;
+    static final int NOTIF_MIN1 = 40;
 
     static final int NOTIF_HOUR2 = 16;
     static final int NOTIF_MIN2 = 30;
@@ -38,34 +38,20 @@ public class InitAlarms extends IntentService {
         PendingIntent pendingIntent;
         AlarmManager alarmManager;
         Intent intentsOpen = new Intent(context, TimeAlarm.class);
-        intentsOpen.setAction("aaa");
+        intentsOpen.setAction("com.cmpe.boun.buyemek.TimeAlarm");
         pendingIntent = PendingIntent.getBroadcast(context,111, intentsOpen, 0);
 
 
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Calendar lunchTime = Calendar.getInstance();
-        lunchTime.set(Calendar.MINUTE, NOTIF_MIN1);
-        lunchTime.set(Calendar.HOUR_OF_DAY, NOTIF_HOUR1);
+        // lunchTime.set(Calendar.MINUTE, NOTIF_MIN1);
+        // lunchTime.set(Calendar.HOUR_OF_DAY, NOTIF_HOUR1);
 
-        Calendar dinnerTime = Calendar.getInstance();
-        dinnerTime.set(Calendar.MINUTE, NOTIF_MIN2);
-        dinnerTime.set(Calendar.HOUR_OF_DAY, NOTIF_HOUR2);
-
-        Log.d("time_lunch", df.format(lunchTime.getTime()));
-        Log.d("time_dinner", df.format(dinnerTime.getTime()));
-
-        if (lunchTime.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
-            lunchTime.add(Calendar.DATE, 1);
-        }
-        if (dinnerTime.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()){
-            dinnerTime.add(Calendar.DATE, 1);
-        }
+        lunchTime.add(Calendar.SECOND, 10);
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, lunchTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dinnerTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         Log.d(TAG + "_lunch", df.format(lunchTime.getTime()));
-        Log.d(TAG + "_dinner", df.format(dinnerTime.getTime()));
 
 
     }
