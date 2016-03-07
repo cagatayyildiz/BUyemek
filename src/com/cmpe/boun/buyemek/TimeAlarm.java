@@ -38,6 +38,7 @@ public class TimeAlarm extends BroadcastReceiver {
             lunchTime.set(Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH,InitAlarms.NOTIF_HOUR1,InitAlarms.NOTIF_MIN1 +5);
 
             Meal currentMeal = null;
+            Log.d("size of todays:", ""+todays.size());
             if (lunchTime.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
                 if (todays.size()>0 && todays.get(0).time.contains(Meal.MEAL1_TIME)) {
                     currentMeal = todays.get(0);
@@ -57,6 +58,7 @@ public class TimeAlarm extends BroadcastReceiver {
 
 
             if (currentMeal != null) {
+                Log.d("current meal for notif:", currentMeal.toString());
                 String contextTitle = currentMeal.time.substring(0,1).toUpperCase() + currentMeal.time.substring(1) + " Yemegi";
                 String contextText = currentMeal.getJustMeals();
 

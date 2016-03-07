@@ -38,7 +38,7 @@ public class InitAlarms extends IntentService {
         PendingIntent pendingIntent;
         AlarmManager alarmManager;
         Intent intentsOpen = new Intent(context, TimeAlarm.class);
-        intentsOpen.setAction("com.cmpe.boun.buyemek.TimeAlarm");
+        intentsOpen.setAction("com.cmpe.boun.buyemek.InitAlarms");
         pendingIntent = PendingIntent.getBroadcast(context,111, intentsOpen, 0);
 
 

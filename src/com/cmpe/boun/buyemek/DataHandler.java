@@ -116,14 +116,14 @@ import java.util.Date;
 
 		String month = namesOfMonths[c.get(Calendar.MONTH)];
 		String day = c.get(Calendar.DAY_OF_MONTH)+"";
-		String year = c.get(Calendar.DAY_OF_YEAR)+"";
+		String year = c.get(Calendar.YEAR)+"";
 		return getMealsSpecific(month,day,year);
 	}
 
 	public ArrayList<Meal> getTodaysMeals() {
 		String month = namesOfMonths[Calendar.getInstance().get(Calendar.MONTH)];
 		String day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"";
-		String year = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)+"";
+		String year = Calendar.getInstance().get(Calendar.YEAR)+"";
 		return getMealsSpecific(month,day,year);
 	}
 
@@ -133,10 +133,11 @@ import java.util.Date;
 		String selectQuery = "SELECT  * FROM " + TABLE_FOOD + " WHERE " + KEY_FOOD_MONTH + "=\"" + month + "\""
 				+ " AND " + KEY_FOOD_DAY+ "=\"" + day + "\""
 				+ " AND " + KEY_FOOD_YEAR + "=\"" + year + "\"";
+        Log.d("selectQuery:", selectQuery);
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
-
+        Log.d("cursor count:", "" + cursor.getCount());
 		if (cursor.moveToFirst()) {
 			do {
 				Meal m = new Meal();
@@ -154,6 +155,7 @@ import java.util.Date;
 		}
 
 		db.close();
+        Log.d("size of getmeals:", "" + list.size());
 
 		return list;
 	}
