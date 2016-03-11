@@ -1,9 +1,12 @@
 package com.cmpe.boun.buyemek;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -15,6 +18,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +29,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -58,6 +68,9 @@ public class MainActivity extends ActionBarActivity {
 	final static String READ_PATH = "https://dl.dropboxusercontent.com/u/64468378/BUyemek/yemek_listesi.txt";
     final static String meal1Title = "Öğle Yemeği";
     final static String meal2Title = "Akşam Yemeği";
+
+	final static String[] BUTTON_LABELS = {"Tmm!","Tşk!","Okkk!","Anladım!","Orrayt!","Deal!"};
+
 
 
 	@SuppressLint("NewApi") protected void onCreate(Bundle savedInstanceState) {
@@ -120,8 +133,88 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		// http://stackoverflow.com/questions/13026141/nullpointerexception-when-use-findviewbyid-in-alertdialog-builder
+		// http://stackoverflow.com/questions/4954130/center-message-in-android-dialog-box
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.working_hours) {
+
+
+			LinearLayout main_view = new LinearLayout(this);
+			main_view.setOrientation(LinearLayout.VERTICAL);
+
+			for (int c=0; c<2; c++) {
+				TextView header = new TextView(this);
+				header.setText("Hafta içi");
+				header.setGravity(Gravity.CENTER_HORIZONTAL);
+				header.setTypeface(header.getTypeface(), Typeface.BOLD);
+				header.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+				header.setPadding(0,20,0,0);
+				main_view.addView(header);
+
+				TableLayout table = new TableLayout(this);
+				table.setStretchAllColumns(true);
+				String[][] labels = new String[4][4];
+				labels[0][0] = "";
+				labels[0][1] = "Kuzey";
+				labels[0][2] = "Güney";
+				labels[0][3] = "Kilyos";
+				labels[1][0] = "Sabah";
+				labels[2][0] = "Öğlen";
+				labels[3][0] = "Akşam";
+				for (int i = 1; i < 4; i++) {
+					for (int j = 1; j < 4; j++) {
+						labels[i][j] = i + j + "";
+					}
+				}
+				for (int i = 0; i < 4; i++) {
+					TableRow row = new TableRow(this);
+					row.setLayoutParams(new TableLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+					for (int j = 0; j < 4; j++) {
+						TextView textview = new TextView(this);
+						textview.setText(labels[i][j]);
+						textview.setTextColor(Color.BLUE);
+						row.addView(textview);
+					}
+					table.addView(row, new TableLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+				}
+
+				main_view.addView(table);
+			}
+
+			AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
+			alertbox.setView(main_view);
+			alertbox.setNeutralButton(BUTTON_LABELS[new Random().nextInt(BUTTON_LABELS.length)], new DialogInterface.OnClickListener() {
+				// click listener on the alert box
+				public void onClick(DialogInterface arg0, int arg1) {
+					// the button was clicked
+				}
+			});
+
+			alertbox.show();
+			return true;
+		}
+		else if (id == R.id.announcements) {
+			LinearLayout main_view = new LinearLayout(this);
+			main_view.setOrientation(LinearLayout.VERTICAL);
+
+			TextView msg1 = new TextView(this);
+			msg1.setText("This is the alertbox!\nThis is the alertbox!\nThis is the alertbox!\n");
+			msg1.setGravity(Gravity.CENTER_HORIZONTAL);
+			main_view.addView(msg1);
+
+			TextView msg2 = new TextView(this);
+			msg2.setText("This is the alertbox!n");
+			msg2.setGravity(Gravity.CENTER_HORIZONTAL);
+			main_view.addView(msg2);
+			AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
+			alertbox.setView(main_view);
+			alertbox.setNeutralButton(BUTTON_LABELS[new Random().nextInt(BUTTON_LABELS.length)], new DialogInterface.OnClickListener() {
+				// click listener on the alert box
+				public void onClick(DialogInterface arg0, int arg1) {
+					// the button was clicked
+				}
+			});
+			alertbox.show();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

@@ -4,9 +4,15 @@
     tools:context="com.example.buyemek.MainActivity" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/working_hours"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/working_hours"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/announcements"
+        android:orderInCategory="100"
+        android:title="@string/announcements"
         app:showAsAction="never"/>
 
 </menu>

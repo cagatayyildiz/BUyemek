@@ -7,7 +7,9 @@
     <string name="title_section3">Section 3</string>
     <string name="title_section4">Section 4</string>
     <string name="title_section5">Section 5</string>
-    <string name="action_settings">Settings</string>
+    <string name="working_hours">Çalışma Saatleri</string>
     <string name="notif_checkbox_text">Bildirim almak istiyorum</string>
+    <string name="announcements">Duyurular</string>
+
 
 </resources>
