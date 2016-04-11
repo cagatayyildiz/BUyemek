@@ -8,11 +8,11 @@
         android:orderInCategory="100"
         android:title="@string/working_hours"
         app:showAsAction="never"/>
-
+    <!--
     <item
         android:id="@+id/announcements"
         android:orderInCategory="100"
         android:title="@string/announcements"
         app:showAsAction="never"/>
-
+    -->
 </menu>

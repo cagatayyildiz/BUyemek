@@ -81,7 +81,12 @@ public class MainActivity extends ActionBarActivity {
 		db = new DataHandler(getApplicationContext());
 
 
-		InitAlarms.setAlarms(getApplicationContext());
+        if (!SaveSharedPreference.getAppInstalledFlag(getApplicationContext())) {
+            InitAlarms.setAlarms(getApplicationContext());
+            Log.d("Alarms", "Initial alarms are set");
+            SaveSharedPreference.updateAppInstalledFlag(getApplicationContext(), true);
+        }
+
 
 		if (isNetworkAvailable()) {
 			if (db.isDatabaseUpToDate()) {
@@ -193,6 +198,7 @@ public class MainActivity extends ActionBarActivity {
 			alertbox.show();
 			return true;
 		}
+		/*
 		else if (id == R.id.announcements) {
 			LinearLayout main_view = new LinearLayout(this);
 			main_view.setOrientation(LinearLayout.VERTICAL);
@@ -217,6 +223,7 @@ public class MainActivity extends ActionBarActivity {
 			alertbox.show();
 			return true;
 		}
+		*/
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -342,9 +349,9 @@ public class MainActivity extends ActionBarActivity {
                @Override
                public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
                    SaveSharedPreference.updateNotificationStatus(getActivity().getApplicationContext(), isChecked);
+                   Log.d("NotificationStatus", "now it is " + isChecked);
                }
-           }
-            );
+            });
 
             // prepare date info
 			Date date = new Date();
