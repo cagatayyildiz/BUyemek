@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/cagatay/Dropbox/Academic_Stuff/MyGithubRepos/BUyemek/JavaSheetsExample/dropbox-core-sdk-1.8.2.jar"/>
-	<classpathentry kind="lib" path="/home/cagatay/Dropbox/Academic_Stuff/MyGithubRepos/BUyemek/JavaSheetsExample/jackson-core-2.6.1.jar"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>

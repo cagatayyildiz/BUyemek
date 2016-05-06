@@ -8,6 +8,11 @@
         android:orderInCategory="100"
         android:title="@string/working_hours"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/calorie_list"
+        android:orderInCategory="100"
+        android:title="@string/calorie_list"
+        app:showAsAction="never"/>
     <!--
     <item
         android:id="@+id/announcements"

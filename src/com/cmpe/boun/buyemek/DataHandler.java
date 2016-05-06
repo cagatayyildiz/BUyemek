@@ -3,6 +3,7 @@ package com.cmpe.boun.buyemek;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,9 +11,18 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 @SuppressLint("NewApi") public class DataHandler extends SQLiteOpenHelper {
@@ -25,7 +35,7 @@ import java.util.Date;
 	static final int DATABASE_VERSION = 1;
 	final static String[] namesOfMonths = { "Ocak", "Şubat", "Mart",
 		"Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim",
-		"Kasım", "Aralık" };
+		"Kasım", "Aralık","Ocak"};
 
 	// Database Name
 	static final String DATABASE_NAME = "MyDatabase";
@@ -58,7 +68,8 @@ import java.util.Date;
 				KEY_FOOD_DAY + " TEXT, " + KEY_FOOD_MONTH + " TEXT, " + 
 				KEY_FOOD_YEAR + " TEXT, " + KEY_FOOD_MEAL + " TEXT, " +
 				KEY_FOOD_FOOD1 + " TEXT, " + KEY_FOOD_FOOD2 + " TEXT, " + KEY_FOOD_FOOD2_VEG + " TEXT, " +
-				KEY_FOOD_FOOD3 + " TEXT, " + KEY_FOOD_FOOD4 + " TEXT" + 
+				KEY_FOOD_FOOD3 + " TEXT, " + KEY_FOOD_FOOD4 + " TEXT, " +
+                "PRIMARY KEY (" + KEY_FOOD_DAY + ", " +  KEY_FOOD_MONTH + ", " + KEY_FOOD_MEAL + ")" +
 				")";
 		arg0.execSQL(CREATE_FOOD_TABLE);
 	}
@@ -74,9 +85,10 @@ import java.util.Date;
 	}
 
 
-	public void insertMeals(ArrayList<Meal> list) {
+	public void insertMeals(ArrayList<Meal> list, boolean clean) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		cleanDatabase();
+		if (clean)
+            cleanDatabase();
 		for (Meal m : list) {
 			insertMeal(db, m);
 		}
@@ -84,8 +96,6 @@ import java.util.Date;
 	}
 	
 	public void cleanDatabase() {
-		//String previousMonth = namesOfMonths[Math.max(Calendar.getInstance().get(Calendar.MONTH)-1,0)];
-		//String deleteQuery = "DELETE FROM " + TABLE_FOOD  + " WHERE " + KEY_FOOD_MONTH + "=\"" + previousMonth + "\"";
 		SQLiteDatabase db = this.getWritableDatabase();
 		String deleteQuery = "DELETE FROM " + TABLE_FOOD ;
 		db.execSQL(deleteQuery);
@@ -107,95 +117,64 @@ import java.util.Date;
 	}
 
 
-	public ArrayList<Meal> getTomorowsMeals() {
-
-		Calendar c = Calendar.getInstance();
-		Date dt = new Date();
-		c.setTime(dt);
-		c.add(Calendar.DATE, 1);
-
-		String month = namesOfMonths[c.get(Calendar.MONTH)];
-		String day = c.get(Calendar.DAY_OF_MONTH)+"";
-		String year = c.get(Calendar.YEAR)+"";
-		return getMealsSpecific(month,day,year);
-	}
-
 	public ArrayList<Meal> getTodaysMeals() {
 		String month = namesOfMonths[Calendar.getInstance().get(Calendar.MONTH)];
-		String day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"";
-		String year = Calendar.getInstance().get(Calendar.YEAR)+"";
-		return getMealsSpecific(month,day,year);
+		int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		return getMealsOn(day,month);
 	}
 
-	public ArrayList<Meal> getMealsSpecific(String month,String day,String year) {
-		ArrayList<Meal> list = new ArrayList<Meal>();
+    public ArrayList<Meal> getMealsOn(int day, String month) {
 
-		String selectQuery = "SELECT  * FROM " + TABLE_FOOD + " WHERE " + KEY_FOOD_MONTH + "=\"" + month + "\""
-				+ " AND " + KEY_FOOD_DAY+ "=\"" + day + "\""
-				+ " AND " + KEY_FOOD_YEAR + "=\"" + year + "\"";
-        Log.d("selectQuery:", selectQuery);
+        ArrayList<Meal> list = new ArrayList<Meal>();
+        String selectQuery = "SELECT  * FROM " + TABLE_FOOD + " WHERE "+ KEY_FOOD_DAY + "=\"" + day + "\" AND " + KEY_FOOD_MONTH + "=\"" + month + "\"";
+        Log.d("selectQuery:",selectQuery);
 
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
-        Log.d("cursor count:", "" + cursor.getCount());
-		if (cursor.moveToFirst()) {
-			do {
-				Meal m = new Meal();
-				m.day = (Integer.parseInt(cursor.getString(0)));
-				m.month = (cursor.getString(1));
-				m.year = (Integer.parseInt(cursor.getString(2)));
-				m.time = (cursor.getString(3));
-				m.first_meal =(cursor.getString(4));
-				m.second_meal = (cursor.getString(5));
-				m.second_meal_veg = (cursor.getString(6));
-				m.third_meal = (cursor.getString(7));
-				m.fourth_meal = (cursor.getString(8));
-				list.add(m);
-			} while (cursor.moveToNext());
-		}
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
 
-		db.close();
-        Log.d("size of getmeals:", "" + list.size());
+        if (cursor.moveToFirst()) {
+            do {
+                Meal m = new Meal();
+                m.day = (Integer.parseInt(cursor.getString(0)));
+                m.month = (cursor.getString(1));
+                m.year = (Integer.parseInt(cursor.getString(2)));
+                m.time = (cursor.getString(3));
+                m.first_meal =(cursor.getString(4));
+                m.second_meal = (cursor.getString(5));
+                m.second_meal_veg = (cursor.getString(6));
+                m.third_meal = (cursor.getString(7));
+                m.fourth_meal = (cursor.getString(8));
+                list.add(m);
+            } while (cursor.moveToNext());
+        }
 
-		return list;
-	}
-
+        db.close();
+        return list;
+    }
 	
-	public ArrayList<Meal> getThisMonthsMeals() {
-		ArrayList<Meal> list = new ArrayList<Meal>();
-		String month = namesOfMonths[Calendar.getInstance().get(Calendar.MONTH)];
-		
-		String selectQuery = "SELECT  * FROM " + TABLE_FOOD + " WHERE " + KEY_FOOD_MONTH + "=\"" + month + "\"";
-		
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
-
-		if (cursor.moveToFirst()) {
-			do {
-				Meal m = new Meal();
-				m.day = (Integer.parseInt(cursor.getString(0)));
-				m.month = (cursor.getString(1));
-				m.year = (Integer.parseInt(cursor.getString(2)));
-				m.time = (cursor.getString(3));
-				m.first_meal =(cursor.getString(4));
-				m.second_meal = (cursor.getString(5));
-				m.second_meal_veg = (cursor.getString(6));
-				m.third_meal = (cursor.getString(7));
-				m.fourth_meal = (cursor.getString(8));
-				list.add(m);
-			} while (cursor.moveToNext());
-		}
-
-		db.close(); 
-		
-		return list;
+	public ArrayList<Meal> getNextNDaysMeals(int N) {
+        ArrayList<Meal> meals = new ArrayList<Meal>();
+        Calendar the_day = Calendar.getInstance();
+        for (int i=0; i<N; i++) {
+            String month = namesOfMonths[the_day.get(Calendar.MONTH)];
+            int day = the_day.get(Calendar.DATE);
+            meals.addAll(getMealsOn(day,month));
+            the_day.add(Calendar.DATE, 1);
+        }
+        return meals;
 	}
 	
 	public boolean isDatabaseUpToDate() {
+
+        // if at least one section in the app may be empty
+        if (Calendar.getInstance().get(Calendar.DATE) >= 31-MainActivity.NUM_SECTIONS) {
+            return false;
+        }
+
 		String month = namesOfMonths[Calendar.getInstance().get(Calendar.MONTH)];
 		
 		String selectQuery = "SELECT  * FROM " + TABLE_FOOD + " WHERE " + KEY_FOOD_MONTH + "=\"" + month + "\"";
-		Log.d("Query:", selectQuery);
+		Log.d("Query isDbUpToDate():", selectQuery);
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
@@ -208,4 +187,44 @@ import java.util.Date;
 			return false;
 		}
 	}
+
+	public static LinkedHashMap<String, String> get_food_calorie_map(Context context) {
+        BufferedReader br = null;
+        LinkedHashMap<String, String> food_calorie_map = new LinkedHashMap<String, String>();
+        try {
+            br = new BufferedReader(new InputStreamReader(context.getAssets().open("kalori_listesi.txt")));
+        }
+        catch (IOException e) {
+
+        }
+        try {
+            while(true) {
+                String str = br.readLine();
+                if (str==null) {
+                    break;
+                }
+                int ind = str.length()-1;
+                boolean white_space_found = false;
+                for (; ind>=0; ind--) {
+                    if (str.charAt(ind)==' ') {
+                        if (!white_space_found) {
+                            white_space_found = true;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                food_calorie_map.put(str.substring(0, ind), str.substring(ind+1));
+            }
+        }
+        catch (Exception e) {
+            try {
+                br.close();
+            } catch (IOException e1) {
+
+            }
+        }
+        return food_calorie_map;
+    }
 }

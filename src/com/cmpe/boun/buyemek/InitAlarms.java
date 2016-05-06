@@ -19,11 +19,11 @@ public class InitAlarms extends IntentService {
 
     private static final String TAG = "InitAlarms";
 
-    static final int NOTIF_HOUR1 = 3;
-    static final int NOTIF_MIN1 = 1;
+    static final int NOTIF_HOUR1 = 15;
+    static final int NOTIF_MIN1 = 00;
 
-    static final int NOTIF_HOUR2 = 3;
-    static final int NOTIF_MIN2 = 3;
+    static final int NOTIF_HOUR2 = 15;
+    static final int NOTIF_MIN2 = 10;
 
     public InitAlarms() {
         super(TAG);
@@ -35,12 +35,14 @@ public class InitAlarms extends IntentService {
 
     public static void setAlarms(Context context) {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        PendingIntent pendingIntent;
-        AlarmManager alarmManager;
-        Intent intentsOpen = new Intent(context, TimeAlarm.class);
-        intentsOpen.setAction("com.cmpe.boun.buyemek.InitAlarms");
-        pendingIntent = PendingIntent.getBroadcast(context,111, intentsOpen, 0);
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent[] = new PendingIntent[2];
+        AlarmManager alarmManager[] = new AlarmManager[2];
+        for (int i=0; i<2; i++) {
+            Intent intentsOpen = new Intent(context, TimeAlarm.class);
+            intentsOpen.setAction("com.cmpe.boun.buyemek.InitAlarms");
+            pendingIntent[i] = PendingIntent.getBroadcast(context,111, intentsOpen, 0);
+            alarmManager[i] = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        }
 
         Calendar now = Calendar.getInstance();
 
@@ -61,8 +63,8 @@ public class InitAlarms extends IntentService {
         Log.d("DinnerTime: ", df.format(dinnerTime.getTime()));
 
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, lunchTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dinnerTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManager[0].setRepeating(AlarmManager.RTC_WAKEUP, lunchTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent[0]);
+        alarmManager[1].setRepeating(AlarmManager.RTC_WAKEUP, dinnerTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent[1]);
         Log.d(TAG + "_lunch", df.format(lunchTime.getTime()));
         Log.d(TAG + "_dinner", df.format(dinnerTime.getTime()));
 

@@ -31,6 +31,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -47,8 +48,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Random;
+import java.util.TreeMap;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -60,7 +63,9 @@ public class MainActivity extends ActionBarActivity {
 	DataHandler db = null;
 	ArrayList<Meal> foodList = new ArrayList<Meal>();
 	ArrayList<String> newMealLines = new ArrayList<String>();
-	final static String[] namesOfDays = { "Pazartesi", "Salı",
+    LinkedHashMap<String, String> food_calorie_map;
+    final static int NUM_SECTIONS = 10;
+    final static String[] namesOfDays = { "Pazartesi", "Salı",
 		"Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar" };
 	final static String[] namesOfMonths = { "Ocak", "Şubat", "Mart",
 		"Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim",
@@ -72,7 +77,6 @@ public class MainActivity extends ActionBarActivity {
 	final static String[] BUTTON_LABELS = {"Tmm!","Tşk!","Okkk!","Anladım!","Orrayt!","Deal!"};
 
 
-
 	@SuppressLint("NewApi") protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -80,22 +84,19 @@ public class MainActivity extends ActionBarActivity {
 		mFileDownloadTask = new FileDownloadTask();
 		db = new DataHandler(getApplicationContext());
 
-
+        SaveSharedPreference.updateAppInstalledFlag(getApplicationContext(), false);
         if (!SaveSharedPreference.getAppInstalledFlag(getApplicationContext())) {
             InitAlarms.setAlarms(getApplicationContext());
             Log.d("Alarms", "Initial alarms are set");
             SaveSharedPreference.updateAppInstalledFlag(getApplicationContext(), true);
         }
 
+        SaveSharedPreference.setNotificationSetStatus(getApplicationContext(),true);
 
-		if (isNetworkAvailable()) {
-			if (db.isDatabaseUpToDate()) {
-				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
-				foodList = db.getThisMonthsMeals();
 
-			}
-			else {
-				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
+        Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
+		if (!db.isDatabaseUpToDate()) {
+            if (isNetworkAvailable()) {
 				try {
                     newMealLines = mFileDownloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null).get();
 				} catch (Exception e) {
@@ -103,26 +104,22 @@ public class MainActivity extends ActionBarActivity {
 				}
 				for (int i = 0; i < newMealLines.size(); i++) {
 					String s = newMealLines.get(i);
-					Log.d("Food:", s);
 					foodList.add(new Meal(s));
 				}
-				db.insertMeals(foodList);
-                foodList = db.getThisMonthsMeals();
+				db.insertMeals(foodList,false);
 				Log.d("databasefoodListSize", foodList.size() + " ");
 			}
-		}
-		else {
-			if (db.isDatabaseUpToDate()) {
-				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
-				foodList = db.getThisMonthsMeals();
-			}
-			else {
-				Log.d("isDatabaseUpToDate", db.isDatabaseUpToDate() + " ");
-				foodList = db.getThisMonthsMeals();
-				Toast.makeText(MainActivity.this, "Yemek listesinin güncellenmesi için internete bağlanmanız gereklidir.",
-						Toast.LENGTH_LONG).show();
-			}
-		}
+		    else {
+                Toast.makeText(MainActivity.this, "Yemek listesinin güncellenmesi için internete bağlanmanız gereklidir.",
+                        Toast.LENGTH_LONG).show();
+
+            }
+        }
+        foodList = db.getNextNDaysMeals(NUM_SECTIONS);
+        food_calorie_map = DataHandler.get_food_calorie_map(getApplicationContext());
+        for (Meal m : foodList) {
+            Log.d("Meal retrieved from db:", m.toString());
+        }
 
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -147,37 +144,56 @@ public class MainActivity extends ActionBarActivity {
 			LinearLayout main_view = new LinearLayout(this);
 			main_view.setOrientation(LinearLayout.VERTICAL);
 
+            String[][][] labels = new String[4][4][2];
+            labels[1][1][0] = "7.30-9.30";
+            labels[1][2][0] = "7.30-9.30";
+            labels[1][3][0] = "7.30-9.30";
+            labels[2][1][0] = "11.30-14.30";
+            labels[2][2][0] = "12.30-14.30";
+            labels[2][3][0] = "12.00-15.00";
+            labels[3][1][0] = "17.00-19.00";
+            labels[3][2][0] = "17.00-19.00";
+            labels[3][3][0] = "17.00-19.00";
+
+            labels[1][1][1] = "8.30-10.00";
+            labels[1][2][1] = "8.30-10.00";
+            labels[1][3][1] = "8.30-10.00";
+            labels[2][1][1] = "12.30-13.45";
+            labels[2][2][1] = "SORRY";
+            labels[2][3][1] = "12.30-13.45";
+            labels[3][1][1] = "17.30-19.30";
+            labels[3][2][1] = "17.30-19.30";
+            labels[3][3][1] = "17.30-19.30";
+
+            String[] titles = {"Hafta İçi", "Hafta Sonu"};
 			for (int c=0; c<2; c++) {
+                labels[0][0][c] = "";
+                labels[0][1][c] = "Kuzey";
+                labels[0][2][c] = "Güney";
+                labels[0][3][c] = "Kilyos";
+                labels[1][0][c] = "Sabah";
+                labels[2][0][c] = "Öğlen";
+                labels[3][0][c] = "Akşam";
 				TextView header = new TextView(this);
-				header.setText("Hafta içi");
+				header.setText(titles[c]);
 				header.setGravity(Gravity.CENTER_HORIZONTAL);
 				header.setTypeface(header.getTypeface(), Typeface.BOLD);
 				header.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-				header.setPadding(0,20,0,0);
+				header.setPadding(0, 20, 0, 0);
 				main_view.addView(header);
 
 				TableLayout table = new TableLayout(this);
 				table.setStretchAllColumns(true);
-				String[][] labels = new String[4][4];
-				labels[0][0] = "";
-				labels[0][1] = "Kuzey";
-				labels[0][2] = "Güney";
-				labels[0][3] = "Kilyos";
-				labels[1][0] = "Sabah";
-				labels[2][0] = "Öğlen";
-				labels[3][0] = "Akşam";
-				for (int i = 1; i < 4; i++) {
-					for (int j = 1; j < 4; j++) {
-						labels[i][j] = i + j + "";
-					}
-				}
 				for (int i = 0; i < 4; i++) {
 					TableRow row = new TableRow(this);
 					row.setLayoutParams(new TableLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 					for (int j = 0; j < 4; j++) {
 						TextView textview = new TextView(this);
-						textview.setText(labels[i][j]);
+						textview.setText(labels[i][j][c]);
 						textview.setTextColor(Color.BLUE);
+                        if (i==0 || j==0)
+                            textview.setTextColor(Color.BLACK);
+                        textview.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
 						row.addView(textview);
 					}
 					table.addView(row, new TableLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -198,32 +214,46 @@ public class MainActivity extends ActionBarActivity {
 			alertbox.show();
 			return true;
 		}
-		/*
-		else if (id == R.id.announcements) {
-			LinearLayout main_view = new LinearLayout(this);
-			main_view.setOrientation(LinearLayout.VERTICAL);
+		else if (id == R.id.calorie_list) {
 
-			TextView msg1 = new TextView(this);
-			msg1.setText("This is the alertbox!\nThis is the alertbox!\nThis is the alertbox!\n");
-			msg1.setGravity(Gravity.CENTER_HORIZONTAL);
-			main_view.addView(msg1);
+            ScrollView scroll = new ScrollView(this);
+            AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
 
-			TextView msg2 = new TextView(this);
-			msg2.setText("This is the alertbox!n");
-			msg2.setGravity(Gravity.CENTER_HORIZONTAL);
-			main_view.addView(msg2);
-			AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
-			alertbox.setView(main_view);
-			alertbox.setNeutralButton(BUTTON_LABELS[new Random().nextInt(BUTTON_LABELS.length)], new DialogInterface.OnClickListener() {
-				// click listener on the alert box
-				public void onClick(DialogInterface arg0, int arg1) {
-					// the button was clicked
-				}
-			});
-			alertbox.show();
-			return true;
+            TableLayout table = new TableLayout(this);
+            table.setStretchAllColumns(true);
+
+            for (String key : food_calorie_map.keySet()) {
+                TableRow row = new TableRow(this);
+                TextView textview = new TextView(this);
+                textview.setText(key);
+                textview.setTextColor(Color.BLUE);
+                textview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                row.addView(textview);
+
+                TextView textview2 = new TextView(this);
+                textview2.setText(food_calorie_map.get(key));
+                textview2.setTextColor(Color.RED);
+                textview2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                row.addView(textview2);
+
+                table.addView(row, new TableLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+            }
+
+            scroll.addView(table);
+
+
+            alertbox.setView(scroll);
+            alertbox.setNeutralButton(BUTTON_LABELS[new Random().nextInt(BUTTON_LABELS.length)], new DialogInterface.OnClickListener() {
+                // click listener on the alert box
+                public void onClick(DialogInterface arg0, int arg1) {
+                    // the button was clicked
+                }
+            });
+
+            alertbox.show();
+
+            return true;
 		}
-		*/
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -240,12 +270,14 @@ public class MainActivity extends ActionBarActivity {
 
 		@Override
 		public int getCount() {
-			return 5;
+			return NUM_SECTIONS;
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
+            return "Section " + (position+1);
+            /*
 			switch (position) {
 			case 0:
 				return getString(R.string.title_section1).toUpperCase(l);
@@ -259,6 +291,7 @@ public class MainActivity extends ActionBarActivity {
 				return getString(R.string.title_section5).toUpperCase(l);
 			}
 			return null;
+			*/
 		}
 	}
 
@@ -340,6 +373,8 @@ public class MainActivity extends ActionBarActivity {
                 notifCheckBox.setVisibility(View.GONE);
             }
 
+
+            notifCheckBox.setVisibility(View.INVISIBLE);
             boolean currentNotifStatus = SaveSharedPreference.getNotificationStatus(getActivity().getApplicationContext());
             if (currentNotifStatus){
                 notifCheckBox.setChecked(true);
@@ -365,6 +400,7 @@ public class MainActivity extends ActionBarActivity {
 				dayOfWeek = 7;
 
 			ArrayList<Meal> foodList = ((MainActivity) getActivity()).foodList;
+            LinkedHashMap<String,String> food_calorie_map = ((MainActivity) getActivity()).food_calorie_map;
 
 			int currentDay = Integer.parseInt(sdf.format(date).substring(0, 2));
 			String currentMonth = namesOfMonths[Math.max(Integer.parseInt(sdf.format(
@@ -384,36 +420,81 @@ public class MainActivity extends ActionBarActivity {
             dinnerSecondMealVegTextView.setTextColor(Color.RED);
 
 			// find correct meal
+            boolean areMealsSet[] = {false, false};
 			for (int i = 0; i < foodList.size(); i++) {
 				Meal meal = foodList.get(i);
-				if (meal.day == currentDay
-						&& meal.month.toLowerCase()
-						.contentEquals(currentMonth.toLowerCase())) {
-					lunchFirstMealTextView.setText(meal.first_meal);
-					lunchSecondMealTextView.setText(meal.second_meal);
-                    lunchSecondMealVegTextView.setText(meal.second_meal_veg);
-					lunchThirdMealTextView.setText(meal.third_meal);
-					lunchFourthMealTextView.setText(meal.fourth_meal);
-
-					if(foodList.size()>=i+1)
-					{
-						if (meal.day == currentDay
-								&& meal.month.toLowerCase()
-								.contentEquals(currentMonth.toLowerCase())) {
-							meal = foodList.get(i + 1);
-							dinnerFirstMealTextView.setText(meal.first_meal);
-							dinnerSecondMealTextView.setText(meal.second_meal);
-                            dinnerSecondMealVegTextView.setText(meal.second_meal_veg);
-							dinnerThirdMealTextView.setText(meal.third_meal);
-							dinnerFourthMealTextView.setText(meal.fourth_meal);
-						}
+                Log.d("meal_today", meal.toString());
+				if (meal.day == currentDay && meal.month.equalsIgnoreCase(currentMonth) && meal.first_meal!=null) {
+					if (meal.time.equals(Meal.MEAL1_TIME)) {
+                        lunchFirstMealTextView.setText(meal.first_meal + get_calorie(food_calorie_map,meal.first_meal));
+                        lunchSecondMealTextView.setText(meal.second_meal + get_calorie(food_calorie_map,meal.second_meal));
+                        lunchSecondMealVegTextView.setText(meal.second_meal_veg  + get_calorie(food_calorie_map,meal.second_meal_veg));
+                        lunchThirdMealTextView.setText(meal.third_meal  + get_calorie(food_calorie_map,meal.third_meal));
+                        lunchFourthMealTextView.setText(meal.fourth_meal);
+                        areMealsSet[0] = true;
 					}
-					break;
+                    else if (meal.time.equals(Meal.MEAL2_TIME)) {
+                        dinnerFirstMealTextView.setText(meal.first_meal + get_calorie(food_calorie_map,meal.first_meal));
+                        dinnerSecondMealTextView.setText(meal.second_meal + get_calorie(food_calorie_map,meal.second_meal));
+                        dinnerSecondMealVegTextView.setText(meal.second_meal_veg + get_calorie(food_calorie_map,meal.second_meal_veg));
+                        dinnerThirdMealTextView.setText(meal.third_meal + get_calorie(food_calorie_map,meal.third_meal));
+                        dinnerFourthMealTextView.setText(meal.fourth_meal);
+                        areMealsSet[1] = true;
+                    }
 				}
+                if (areMealsSet[0] && areMealsSet[1]) {
+                    break;
+                }
 			}
 
 			return rootView;
 		}
+
+        public static String get_calorie(LinkedHashMap<String,String> food_calorie_map, String meal) {
+
+            /*
+            if (meal == null) {
+                return "";
+            }
+            String[] divisors = {"-","/","\\"};
+            boolean[] divs = {false, false, false};
+            for (int i=0; i<3; i++)
+                divs[i] = meal.contains(divisors[i]);
+            if (!divs[0] && !divs[1] && !divs[2]) {
+                String cal = " - ";
+                if (food_calorie_map.keySet().contains(meal)) {
+                    cal += food_calorie_map.get(meal);
+                } else {
+                    cal += "??? kcal";
+                }
+                return cal;
+            }
+            else {
+                String divisor = divisors[0];
+                if (divs[1]) divisor = divisors[1];
+                else if (divs[2]) divisor = divisors[2];
+                String[] parts = meal.split(divisor);
+                for (int i=0; i<parts.length; i++) {
+                    if (parts[i].charAt(0) == ' ') {
+                        parts[i] = parts[i].substring(1);
+                    }
+                    if (parts[i].charAt(parts[i].length()-1) == ' ') {
+                        parts[i] = parts[i].substring(0,parts[i].length()-1);
+                    }
+                }
+                String cal = " - ";
+                for (String part : parts) {
+                    if (food_calorie_map.keySet().contains(part)) {
+                        cal += food_calorie_map.get(part) + divisor;
+                    } else {
+                        cal += "??? kcal" + divisor;
+                    }
+                }
+                return cal.substring(0,cal.length()-1);
+            }
+            */
+            return "";
+        }
 	}
 
 	boolean isNetworkAvailable() {
@@ -439,7 +520,6 @@ public class MainActivity extends ActionBarActivity {
 				String s = "";
 				while ((s = buffer.readLine()) != null) {
                     lines.add(s);
-					Log.d("Line:",s);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

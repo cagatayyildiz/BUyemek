@@ -4,15 +4,16 @@ import android.util.Log;
 
 public class Meal {
 
+	private final static String DEFAULT_NOTE = "Bulunamadi!";
 	int day;
-	String month;
+	String month = DEFAULT_NOTE;
 	int year;
-	String time;
-	String first_meal;
-	String second_meal;
-	String second_meal_veg;
-	String third_meal;
-	String fourth_meal;
+	String time = DEFAULT_NOTE;
+	String first_meal = DEFAULT_NOTE;
+	String second_meal = DEFAULT_NOTE;
+	String second_meal_veg = DEFAULT_NOTE;
+	String third_meal = DEFAULT_NOTE;
+	String fourth_meal = DEFAULT_NOTE;
 
 	final static String MEAL1_TIME = "oglen";
 	final static String MEAL2_TIME = "aksam";

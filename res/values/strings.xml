@@ -8,6 +8,8 @@
     <string name="title_section4">Section 4</string>
     <string name="title_section5">Section 5</string>
     <string name="working_hours">Çalışma Saatleri</string>
+    <string name="calorie_list">Kalori Listesi</string>
+
     <string name="notif_checkbox_text">Bildirim almak istiyorum</string>
     <string name="announcements">Duyurular</string>
 
